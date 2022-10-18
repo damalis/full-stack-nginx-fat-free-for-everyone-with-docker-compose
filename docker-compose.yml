@@ -35,7 +35,7 @@ services:
         labels:            
             - 'docker-volume-backup.stop-during-backup=true'
         command: >
-            bash -c "apt-get -y update && apt-get install -y zip unzip && docker-php-ext-install pdo mysql && docker-php-ext-enable pdo mysql; curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && cd ${WEBSERVER_DOC_ROOT}/webapp && composer require bcosca/fatfree-core;  
+            bash -c "apt-get -y update && apt-get install -y zip unzip && docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql; curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && cd ${WEBSERVER_DOC_ROOT}/webapp && composer require bcosca/fatfree-core;  
             grep -qe 'date.timezone = ${LOCAL_TIMEZONE}' ${PHP_INI_DIR_PREFIX}/php/conf.d/security.ini || echo 'date.timezone = ${LOCAL_TIMEZONE}' >> ${PHP_INI_DIR_PREFIX}/php/conf.d/security.ini; php-fpm"
 
     webserver:
