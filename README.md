@@ -224,11 +224,11 @@ add and/or remove fat-free site folders and files with any ftp client program in
 
 #### Webserver
 
-add or remove code in the ```./nginx/templates/nginx.conf.template``` file for custom nginx configurations
+add or remove code in the ```./webserver/templates/nginx.conf.template``` file for custom nginx configurations
 
 [https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/)
 
-[Examples](https://www.nginx.com/resources/wiki/start/topics/examples/full/)
+[https://www.nginx.com/resources/wiki/start/topics/examples/full/](https://www.nginx.com/resources/wiki/start/topics/examples/full/)
 
 #### Database
 
