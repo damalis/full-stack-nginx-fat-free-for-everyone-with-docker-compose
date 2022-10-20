@@ -232,8 +232,6 @@ add or remove code in the ```./webserver/templates/nginx.conf.template``` file f
 
 [https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/)
 
-[https://www.nginx.com/resources/wiki/start/topics/examples/full/](https://www.nginx.com/resources/wiki/start/topics/examples/full/)
-
 #### Database
 
 ```
