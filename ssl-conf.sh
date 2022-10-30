@@ -18,7 +18,7 @@ use_lets_encrypt_certificates() {
 reload_webserver() {
 	cp $1/conf.d/default.conf.bak $1/conf.d/default.conf
 	rm $1/conf.d/default.conf.bak
-	echo "Starting webserver nginx Service"
+	echo "Starting webserver nginx service"
 	nginx -t
 }
 
