@@ -41,6 +41,7 @@ Create rules to open ports to the internet, or to a specific IPv4 address or ran
 	- [Webserver](#webserver)
 	- [Database](#database)
 	- [Redis](#redis)
+	- [Cache](#cache)
 	- [phpMyAdmin](#phpmyadmin)
 	- [backup](#backup)
 
@@ -252,7 +253,7 @@ $db=new DB\SQL(
 
 [https://mariadb.com/kb/en/configuring-mariadb-with-option-files/](https://mariadb.com/kb/en/configuring-mariadb-with-option-files/)
 
-#### Redis and HTTP Caching
+#### Redis
 
 There is a good Cache Engine User Guide that covers how the cache engine works and gives you tips to improve your application and your database queries, as they can be cached by F3 as well. You really should have read it.
 
@@ -261,6 +262,12 @@ Redis host = redis
 Redis host port = 6379
 
 [https://fatfreeframework.com/3.8/cache](https://fatfreeframework.com/3.8/cache)
+
+#### Cache
+
+Caching static Web pages - so the code in some route handlers can be skipped and templates don't have to be reprocessed - is one way of reducing your Web server's work load so it can focus on other tasks.
+
+[https://fatfreeframework.com/3.8/optimization](https://fatfreeframework.com/3.8/optimization)
 
 ### phpMyAdmin
 
