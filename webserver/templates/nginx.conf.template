@@ -48,8 +48,23 @@ server {
 	location ~/\. {
 		deny all;     
 		log_not_found off;
-	}	
+	}
+	#
+	location ~ /.well-known {
+		allow all;
+	}
+	#
+	location = /favicon.ico {
+		log_not_found off;
+		access_log off;
+	}
+	#
+	location = /robots.txt {
+		allow all;
+		log_not_found off;
+		access_log off;
+	}
 	#
 	access_log off;
-	error_log  /var/log/nginx/${NGINX_HOST}.error.log error;
+	error_log  /var/log/nginx/${NGINX_HOST}-443.error.log error;
 }
