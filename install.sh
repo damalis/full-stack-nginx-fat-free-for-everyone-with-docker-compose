@@ -251,7 +251,7 @@ if [ -x "$(command -v docker)" ] && [ -x "$(command -v docker-compose)" ]; then
 			done			
 			echo ""
 			echo "Reloading webserver ssl configuration"
-			docker exec webserver nginx -s reload > /dev/null 2>&1
+			docker container restart webserver > /dev/null 2>&1
 			echo "Ok."
 			echo ""
 			echo "completed setup"
