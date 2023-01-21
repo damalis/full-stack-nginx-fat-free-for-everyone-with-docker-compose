@@ -17,6 +17,9 @@ services:
             - type: bind
               source: ./php-fpm/php-fpm.d/z-www.conf
               target: '${PHP_INI_DIR_PREFIX}/php-fpm.d/z-www.conf'
+            - type: bind
+              source: ./packagecheck.sh
+              target: '/tmp/packagecheck.sh'
         hostname: fat-free
         restart: unless-stopped
         ports:
@@ -35,7 +38,7 @@ services:
         labels:            
             - 'docker-volume-backup.stop-during-backup=true'
         command: >
-            bash -c "apt-get -y update && apt-get install -y zip unzip && docker-php-ext-install pdo_mysql; curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && 
+            bash -c "apt-get -y update && sh /tmp/packagecheck.sh 'zip unzip' && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s pdo_mysql && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && 
             if [ \"$$(ls -A ${WEBSERVER_DOC_ROOT}/webapp/vendor)\" ]; then cd ${WEBSERVER_DOC_ROOT}/webapp && composer update; else cd ${WEBSERVER_DOC_ROOT}/webapp && composer require bcosca/fatfree-core; fi; 
             grep -qe 'date.timezone = ${LOCAL_TIMEZONE}' ${PHP_INI_DIR_PREFIX}/php/conf.d/security.ini || echo 'date.timezone = ${LOCAL_TIMEZONE}' >> ${PHP_INI_DIR_PREFIX}/php/conf.d/security.ini; php-fpm"
 
