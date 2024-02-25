@@ -30,7 +30,7 @@ server {
 	#ssl_dhparam /etc/letsencrypt/ssl-dhparam.pem;
 	include /etc/letsencrypt/options-ssl-nginx.conf;		
 	
-	root /var/www/html/webapp;
+	root /var/www/html;
 	index index.php index.html index.htm;
 	
 	location / {
