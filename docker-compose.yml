@@ -36,7 +36,7 @@ services:
         labels:
             - 'docker-volume-backup.stop-during-backup=true'
         command: >
-            bash -c "apt-get update && sh /tmp/packagecheck.sh 'zip unzip' && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s pdo_mysql gd xdebug && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer && 
+            bash -c "apt-get update && sh /tmp/packagecheck.sh 'unzip' && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s pdo_mysql gd xdebug zip @composer && 
             if [ \"$$(ls -A ${WEBSERVER_DOC_ROOT}/index.php)\" ]; then composer update --working-dir=${WEBSERVER_DOC_ROOT}; else rm -f ${WEBSERVER_DOC_ROOT}/README.md && composer create-project bcosca/fatfree . --working-dir=${WEBSERVER_DOC_ROOT}; fi; 
             grep -qxF 'date.timezone = ${LOCAL_TIMEZONE}' ${PHP_INI_DIR_PREFIX}/php/conf.d/security.ini || echo 'date.timezone = ${LOCAL_TIMEZONE}' >> ${PHP_INI_DIR_PREFIX}/php/conf.d/security.ini; php-fpm"
 
@@ -72,6 +72,11 @@ services:
             - '443:443'
         links:
             - fat-free
+        healthcheck:
+            test: ["CMD-SHELL", "/bin/pidof nginx > /dev/null || exit 1"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
         environment:
             NGINX_HOST: ${DOMAIN_NAME}
             NGINX_PORT: 80
@@ -80,7 +85,8 @@ services:
 
     certbot:
         depends_on:
-            - webserver
+            webserver:
+                condition: service_healthy
         image: certbot/certbot:latest
         container_name: certbot
         networks:
@@ -156,13 +162,15 @@ services:
             - 'db:/var/lib/mysql'
             - 'db-backup-data:/tmp/backup'
             - type: bind
-              source: ./database/conf.d/z-mysql.cnf
-              target: '${MYSQL_CONF_PREFIX}/z-mysql.cnf'
+              source: ./database/conf.d/z-${DATABASE_IMAGE_NAME}.cnf
+              target: '${MYSQL_CONF_PREFIX}/z-${DATABASE_IMAGE_NAME}.cnf'
             - 'phpmyadmin-sql:/docker-entrypoint-initdb.d'
         hostname: database
         restart: unless-stopped
         ports:
             - '3306:3306'
+        privileged: true
+        cgroup: host
         healthcheck:
             test: ["CMD-SHELL", "${DATABASE_ADMIN_COMMANDLINE} ping --silent || exit 1"]
             interval: 5s
@@ -180,7 +188,7 @@ services:
             - "docker-volume-backup.stop-during-backup=true"
             - "docker-volume-backup.archive-pre=/bin/sh -c 'mysqldump -uroot -p${MYSQL_ROOT_PASSWORD} --all-databases > /tmp/backup/db_backup_data.sql'"
             - "docker-volume-backup.exec-label=database"
-        command: bash -c "${DATABASE_PACKAGE_MANAGER} && chmod 0444 ${MYSQL_CONF_PREFIX}/z-mysql.cnf && export PMA_CONTROLUSER=${PMA_CONTROLUSER} export PMA_CONTROLPASS=${PMA_CONTROLPASS} && envsubst '$$PMA_CONTROLUSER,$$PMA_CONTROLPASS' < /docker-entrypoint-initdb.d/create_tables.sql.template > /docker-entrypoint-initdb.d/create_tables.sql && docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+        command: bash -c "${DATABASE_PACKAGE_MANAGER} && chmod 0444 ${MYSQL_CONF_PREFIX}/z-${DATABASE_IMAGE_NAME}.cnf && export PMA_CONTROLUSER=${PMA_CONTROLUSER} export PMA_CONTROLPASS=${PMA_CONTROLPASS} && envsubst '$$PMA_CONTROLUSER,$$PMA_CONTROLPASS' < /docker-entrypoint-initdb.d/create_tables.sql.template > /docker-entrypoint-initdb.d/create_tables.sql && docker-entrypoint.sh --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
 
     redis:
         image: redis:latest
